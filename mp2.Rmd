@@ -14,4 +14,12 @@ load("contributions.rda")
 ## Mae's comment 
 ```
 
+```{r}
+library(tidyverse)
+glimpse(house_elections)
+glimpse(candidates)
+glimpse(committees)
+glimpse(contributions)
+```
+
 
