@@ -29,12 +29,7 @@ contri_candi <- contributions %>%
 
 glimpse(contri_candi)
 
-contri_candi <- contri_candi %>%
-  mutate(var = case_when(
-  var == "REP" ~ "R",
-  var ==  "DEM" ~ "D",
-  TRUE ~ var)
-  )
+
 ```
 
 
