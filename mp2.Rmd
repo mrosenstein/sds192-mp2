@@ -10,8 +10,6 @@ load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
-## Chelsey's adding some comment
-## Mae's comment 
 ```
 
 ```{r}
@@ -20,6 +18,9 @@ glimpse(house_elections)
 glimpse(candidates)
 glimpse(committees)
 glimpse(contributions)
+```
+```{r}
+
 ```
 
 
@@ -31,6 +32,5 @@ contri_candi <- contributions %>%
 
 glimpse(contri_candi)
 ```
-
 
 
