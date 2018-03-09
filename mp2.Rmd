@@ -5,6 +5,7 @@ date: "March 7, 2018"
 output: html_document
 ---
 
+
 ```{r, include=FALSE}
 load("house_elections.rda")
 load("candidates.rda")
@@ -18,9 +19,6 @@ glimpse(house_elections)
 glimpse(candidates)
 glimpse(committees)
 glimpse(contributions)
-```
-```{r}
-
 ```
 
 
