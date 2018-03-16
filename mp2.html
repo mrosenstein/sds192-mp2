@@ -213,17 +213,42 @@ $(document).ready(function () {
 <pre class="r"><code>contri_candi &lt;- contributions %&gt;% 
   left_join(candidates, by = &quot;cand_id&quot;) %&gt;%
   filter(transaction_type == &quot;24E&quot;) %&gt;%
-  select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type)
-  #mutate(year = )
+  select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type) %&gt;%
+  mutate(year = as.Date(transaction_dt, &quot;%m%d%Y&quot;))
 
 glimpse(contri_candi)</code></pre>
 <pre><code>## Observations: 65,433
-## Variables: 5
+## Variables: 6
 ## $ cand_party_affiliation &lt;chr&gt; &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM...
 ## $ transaction_amt        &lt;dbl&gt; 425, 26, 85, 113, 308, 282, 549, 373, 5...
 ## $ transaction_dt         &lt;chr&gt; &quot;11032010&quot;, &quot;01072011&quot;, &quot;01072011&quot;, &quot;11...
 ## $ cand_name              &lt;chr&gt; &quot;SHEA-PORTER, CAROL&quot;, &quot;SHEA-PORTER, CAR...
-## $ entity_type            &lt;chr&gt; &quot;IND&quot;, &quot;IND&quot;, &quot;&quot;, &quot;IND&quot;, &quot;IND&quot;, &quot;IND&quot;, ...</code></pre>
+## $ entity_type            &lt;chr&gt; &quot;IND&quot;, &quot;IND&quot;, &quot;&quot;, &quot;IND&quot;, &quot;IND&quot;, &quot;IND&quot;, ...
+## $ year                   &lt;date&gt; 2010-11-03, 2011-01-07, 2011-01-07, 20...</code></pre>
+<pre class="r"><code>filter(contri_candi, entity_type == &quot;ORG&quot;)</code></pre>
+<pre><code>## # A tibble: 29,771 x 6
+##    cand_party_affil… transaction_amt transaction_dt cand_name  entity_type
+##    &lt;chr&gt;                       &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt;      
+##  1 DEM                          2391 01102011       BOUCHER, … ORG        
+##  2 DEM                          2391 01102011       RAHALL, N… ORG        
+##  3 REP                          3900 01042011       HAYWORTH,… ORG        
+##  4 DEM                          1875 05122011       BOWEN, DE… ORG        
+##  5 DEM                          3750 05132011       BOWEN, DE… ORG        
+##  6 DEM                          5400 05162011       BOWEN, DE… ORG        
+##  7 DEM                          9410 05172011       BOWEN, DE… ORG        
+##  8 DEM                         59750 05112011       HOCHUL, K… ORG        
+##  9 DEM                         15250 05162011       HOCHUL, K… ORG        
+## 10 REP                           504 04282011       FLAKE, JE… ORG        
+## # ... with 29,761 more rows, and 1 more variable: year &lt;date&gt;</code></pre>
+<pre class="r"><code>glimpse(contri_candi)</code></pre>
+<pre><code>## Observations: 65,433
+## Variables: 6
+## $ cand_party_affiliation &lt;chr&gt; &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM...
+## $ transaction_amt        &lt;dbl&gt; 425, 26, 85, 113, 308, 282, 549, 373, 5...
+## $ transaction_dt         &lt;chr&gt; &quot;11032010&quot;, &quot;01072011&quot;, &quot;01072011&quot;, &quot;11...
+## $ cand_name              &lt;chr&gt; &quot;SHEA-PORTER, CAROL&quot;, &quot;SHEA-PORTER, CAR...
+## $ entity_type            &lt;chr&gt; &quot;IND&quot;, &quot;IND&quot;, &quot;&quot;, &quot;IND&quot;, &quot;IND&quot;, &quot;IND&quot;, ...
+## $ year                   &lt;date&gt; 2010-11-03, 2011-01-07, 2011-01-07, 20...</code></pre>
 <pre class="r"><code>contri_candi &lt;- contri_candi %&gt;%
   mutate(cand_party_affiliation = case_when(
     cand_party_affiliation == &quot;REP&quot; ~ &quot;R&quot;,
