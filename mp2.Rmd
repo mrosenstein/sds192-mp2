@@ -34,9 +34,19 @@ contri_candi <- contributions %>%
   left_join(candidates, by = "cand_id") %>%
   filter(transaction_type == "24E") %>%
   select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type) %>%
-  mutate(year = as.Date(transaction_dt, "%m%d%Y"))
-
+  mutate(year = as.Date(transaction_dt, "%m%d%Y")) %>%
+  select(-transaction_dt) %>%
+  group_by(cand_name,cand_party_affiliation,year) %>%
+  summarize(total_amt = sum(transaction_amt))
+           
 glimpse(contri_candi)
+```
+
+```{r}
+my_plot <- ggplot(aes(x=year, y= total_amt,group=cand_party_affiliation)) +
+  geom_point()
+  
+
 ```
 
 
