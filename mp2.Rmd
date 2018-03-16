@@ -39,7 +39,7 @@ contri_candi <- contributions %>%
 glimpse(contri_candi)
 
 contri_candi <- contri_candi %>%
-  mutate(var = case_when(
+  mutate(cand_party_affiliation = case_when(
     cand_party_affiliation == "REP" ~ "R",
     cand_party_affiliation == "DEM" ~ "D",
     TRUE ~ cand_party_affiliation)

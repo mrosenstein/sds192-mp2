@@ -125,6 +125,8 @@ $(document).ready(function () {
 </div>
 
 
+<p>We looked at contribution amount to each candidates and how that differs by candidate’s party affiliation. We also looked at how contributions change over time by using time series data.</p>
+<p>Data wrangling: 1) We first filter out 2) Join the candidates dataset with contribution dataset by candidate’s id number; 3) We only looked at transaction type 24E, which is independent expenditure advocating election of candidate. 4) We only select variables that we are interestd in looking at: candidate’s party affiliation, transaction amount, transaction date, candidate name, and the source of the contributions (the entity type (CAN, CCM, COM, ORG, PAC, PTY)); 5) We mutate the transaction date from numeric numbers to strings;</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>## ✔ ggplot2 2.2.1     ✔ purrr   0.2.4
@@ -210,16 +212,24 @@ $(document).ready(function () {
 ## $ sub_id           &lt;dbl&gt; 4.03182e+18, 4.03172e+18, 4.03172e+18, 4.0317...</code></pre>
 <pre class="r"><code>contri_candi &lt;- contributions %&gt;% 
   left_join(candidates, by = &quot;cand_id&quot;) %&gt;%
+  filter(transaction_type == &quot;24E&quot;) %&gt;%
   select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type)
+  #mutate(year = )
 
 glimpse(contri_candi)</code></pre>
-<pre><code>## Observations: 396,369
+<pre><code>## Observations: 65,433
 ## Variables: 5
-## $ cand_party_affiliation &lt;chr&gt; &quot;REP&quot;, &quot;DEM&quot;, &quot;REP&quot;, &quot;DEM&quot;, &quot;REP&quot;, &quot;REP...
-## $ transaction_amt        &lt;dbl&gt; 2400, 1000, 1000, 2500, 1000, 5000, 100...
-## $ transaction_dt         &lt;chr&gt; &quot;02252011&quot;, &quot;02012011&quot;, &quot;02012011&quot;, &quot;02...
-## $ cand_name              &lt;chr&gt; &quot;KLINE, JOHN PAUL JR&quot;, &quot;RYAN, TIMOTHY&quot;,...
-## $ entity_type            &lt;chr&gt; &quot;COM&quot;, &quot;CCM&quot;, &quot;CCM&quot;, &quot;CCM&quot;, &quot;CCM&quot;, &quot;CCM...</code></pre>
+## $ cand_party_affiliation &lt;chr&gt; &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM&quot;, &quot;DEM...
+## $ transaction_amt        &lt;dbl&gt; 425, 26, 85, 113, 308, 282, 549, 373, 5...
+## $ transaction_dt         &lt;chr&gt; &quot;11032010&quot;, &quot;01072011&quot;, &quot;01072011&quot;, &quot;11...
+## $ cand_name              &lt;chr&gt; &quot;SHEA-PORTER, CAROL&quot;, &quot;SHEA-PORTER, CAR...
+## $ entity_type            &lt;chr&gt; &quot;IND&quot;, &quot;IND&quot;, &quot;&quot;, &quot;IND&quot;, &quot;IND&quot;, &quot;IND&quot;, ...</code></pre>
+<pre class="r"><code>contri_candi &lt;- contri_candi %&gt;%
+  mutate(cand_party_affiliation = case_when(
+    cand_party_affiliation == &quot;REP&quot; ~ &quot;R&quot;,
+    cand_party_affiliation == &quot;DEM&quot; ~ &quot;D&quot;,
+    TRUE ~ cand_party_affiliation)
+  )</code></pre>
 
 
 
