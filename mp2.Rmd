@@ -54,9 +54,19 @@ contri_candi <- contri_candi %>%
 
 ```{r}
 my_plot <- contri_candi %>% ggplot(aes(x=year, y= total_amt,color=cand_party_affiliation)) +
-  geom_point()
+  geom_point() +
+  theme_bw()
   
 my_plot
+```
+```{r}
+my_plot2 <- contri_candi %>% ggplot(aes(x=year, y= total_amt)) +
+  geom_point() +
+  geom_line() +
+  theme_bw() +
+  facet_grid(~cand_party_affiliation)
+  
+my_plot2
 ```
 
 
