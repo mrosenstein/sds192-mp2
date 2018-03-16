@@ -38,7 +38,8 @@ contri_candi <- contributions %>%
   mutate(year = as.Date(transaction_dt, "%m%d%Y")) %>%
   select(-transaction_dt) %>%
   group_by(cand_name,cand_party_affiliation,year) %>%
-  summarize(total_amt = sum(transaction_amt))
+  summarize(total_amt = sum(transaction_amt)) %>%
+  filter(!is.na(cand_party_affiliation))
            
 glimpse(contri_candi)
 
@@ -52,10 +53,10 @@ contri_candi <- contri_candi %>%
 ```
 
 ```{r}
-my_plot <- ggplot(aes(x=year, y= total_amt,group=cand_party_affiliation)) +
+my_plot <- contri_candi %>% ggplot(aes(x=year, y= total_amt,color=cand_party_affiliation)) +
   geom_point()
   
-
+my_plot
 ```
 
 
