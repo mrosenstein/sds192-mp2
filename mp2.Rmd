@@ -33,24 +33,23 @@ glimpse(contributions)
 ```{r}
 contri_candi <- contributions %>% 
   left_join(candidates, by = "cand_id") %>%
-  filter(transaction_type == "24E",
-         entity_type == "ORG") %>%
+  filter(transaction_type == "24E") %>%
   select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type) %>%
   mutate(year = as.Date(transaction_dt, "%m%d%Y")) %>%
   select(-transaction_dt) %>%
-  group_by(cand_name,cand_party_affiliation,year) %>%
+  group_by(cand_name,cand_party_affiliation,year,entity_type) %>%
   summarize(total_amt = sum(transaction_amt)) %>%
   filter(!is.na(cand_party_affiliation))
            
 glimpse(contri_candi)
 
 
-contri_candi <- contri_candi %>%
-  mutate(cand_party_affiliation = case_when(
-    cand_party_affiliation == "REP" ~ "R",
-    cand_party_affiliation == "DEM" ~ "D",
-    TRUE ~ cand_party_affiliation)
-  )
+#contri_candi <- contri_candi %>%
+#  mutate(cand_party_affiliation = case_when(
+#    cand_party_affiliation == "REP" ~ "R",
+#    cand_party_affiliation == "DEM" ~ "D",
+#    TRUE ~ cand_party_affiliation)
+#  )
 ```
 
 ```{r}
@@ -68,6 +67,15 @@ my_plot2 <- contri_candi %>% ggplot(aes(x=year, y= total_amt)) +
   facet_grid(~cand_party_affiliation)
   
 my_plot2
+```
+```{r}
+my_plot3 <- contri_candi %>% 
+  filter(cand_party_affiliation == "REP") %>%
+  ggplot(aes(x=year, y= total_amt)) +
+  geom_line()+
+  theme_bw() +
+  facet_grid(~entity_type)
+my_plot3
 ```
 
 
