@@ -5,13 +5,19 @@ date: "March 7, 2018"
 output: html_document
 ---
 
+We looked at contribution amount to each candidates and how that differs by candidate's party affiliation. We also looked at how contributions change over time by using time series data.
+
+Data wrangling:
+1) We first filter out
+2) Join the candidates dataset with contribution dataset by candidate's id number;
+3) We only looked at transaction type 24E, which is independent expenditure advocating election of candidate. 
+4) We only select variables that we are interestd in looking at: candidate's party affiliation, transaction amount, transaction date, candidate name, and the source of the contributions (the entity type (CAN, CCM, COM, ORG, PAC, PTY));
+5) We mutate the transaction date from numeric numbers to strings;
 ```{r, include=FALSE}
 load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
-## Chelsey's adding some comment
-## Mae's comment 
 ```
 
 ```{r}
@@ -21,16 +27,23 @@ glimpse(candidates)
 glimpse(committees)
 glimpse(contributions)
 ```
-```{r}
 
+
+```{r}
 contri_candi <- contributions %>% 
   left_join(candidates, by = "cand_id") %>%
+  filter(transaction_type == "24E") %>%
   select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type)
+  #mutate(year = )
 
 glimpse(contri_candi)
 
-
+contri_candi <- contri_candi %>%
+  mutate(var = case_when(
+    cand_party_affiliation == "REP" ~ "R",
+    cand_party_affiliation == "DEM" ~ "D",
+    TRUE ~ cand_party_affiliation)
+  )
 ```
-
 
 
