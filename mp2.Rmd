@@ -10,7 +10,7 @@ We looked at contribution amount to each candidates and how that differs by cand
 Data wrangling:
 1) We first filter out
 2) Join the candidates dataset with contribution dataset by candidate's id number;
-3) We only looked at transaction type 24E, which is ( );
+3) We only looked at transaction type 24E, which is independent expenditure advocating election of candidate. 
 4) We only select variables that we are interestd in looking at: candidate's party affiliation, transaction amount, transaction date, candidate name, and the source of the contributions (the entity type (CAN, CCM, COM, ORG, PAC, PTY));
 5) We mutate the transaction date from numeric numbers to strings;
 ```{r, include=FALSE}
@@ -33,6 +33,7 @@ glimpse(contributions)
 contri_candi <- contributions %>% 
   left_join(candidates, by = "cand_id") %>%
   filter(transaction_type == "24E") %>%
+  filter(contri_candi, entity_type == "ORG") %>%
   select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type) %>%
   mutate(year = as.Date(transaction_dt, "%m%d%Y")) %>%
   select(-transaction_dt) %>%
@@ -40,6 +41,14 @@ contri_candi <- contributions %>%
   summarize(total_amt = sum(transaction_amt))
            
 glimpse(contri_candi)
+
+
+contri_candi <- contri_candi %>%
+  mutate(cand_party_affiliation = case_when(
+    cand_party_affiliation == "REP" ~ "R",
+    cand_party_affiliation == "DEM" ~ "D",
+    TRUE ~ cand_party_affiliation)
+  )
 ```
 
 ```{r}
