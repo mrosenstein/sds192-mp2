@@ -33,8 +33,8 @@ glimpse(contributions)
 contri_candi <- contributions %>% 
   left_join(candidates, by = "cand_id") %>%
   filter(transaction_type == "24E") %>%
-  select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type)
-  #mutate(year = )
+  select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type) %>%
+  mutate(year = as.Date(transaction_dt, "%m%d%Y"))
 
 glimpse(contri_candi)
 ```
