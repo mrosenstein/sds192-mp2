@@ -35,9 +35,10 @@ contri_candi <- contributions %>%
   left_join(candidates, by = "cand_id") %>%
   filter(transaction_type == "24E") %>%
   select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type) %>%
-  mutate(year = as.Date(transaction_dt, "%m%d%Y")) %>%
+  mutate(date = as.Date(transaction_dt, "%m%d%Y"),
+         year = substr(date,0,4)) %>%
   select(-transaction_dt) %>%
-  group_by(cand_name,cand_party_affiliation,year,entity_type) %>%
+  group_by(cand_name,cand_party_affiliation,date,year,entity_type) %>%
   summarize(total_amt = sum(transaction_amt)) %>%
   filter(!is.na(cand_party_affiliation))
            
@@ -53,7 +54,7 @@ glimpse(contri_candi)
 ```
 
 ```{r}
-my_plot <- contri_candi %>% ggplot(aes(x=year, y= total_amt,color=cand_party_affiliation)) +
+my_plot <- contri_candi %>% ggplot(aes(x=date, y= total_amt,color=cand_party_affiliation)) +
   geom_point() +
   theme_bw()
   
@@ -61,7 +62,7 @@ my_plot
 ```
 ### Contributions to candidates with different party affiliations
 ```{r}
-my_plot2 <- contri_candi %>% ggplot(aes(x=year, y= total_amt)) +
+my_plot2 <- contri_candi %>% ggplot(aes(x=date, y= total_amt)) +
   #geom_point(size =0.5) +
   geom_line() +
   theme_bw() +
@@ -78,17 +79,41 @@ my_plot2
 ```{r}
 my_plot3 <- contri_candi %>% 
   filter(cand_party_affiliation == "REP") %>%
-  ggplot(aes(x=year, y= total_amt)) +
+  ggplot(aes(x=date, y= total_amt)) +
   geom_line()+
   theme_bw() +
   labs(x = NULL,
        y = "Total Expenditures to Candidates") +
   scale_y_continuous(breaks = c(0,2000000,4000000,6000000,8000000),
                      labels = c("0","2M", "4M", "6M","8M")) +
+  #scale_x_date(breaks = c(2011-01-01,2012-01-01,2013-01-01),
+  #                   labels = c("2011","2012","2013")) +
   theme(axis.text.x = element_text(angle = 45, hjust =1)) +
   facet_grid(~entity_type)
 
 my_plot3
+```
+```{r}
+summary <- contri_candi %>% 
+  group_by(cand_name, cand_party_affiliation, entity_type, year) %>% 
+  summarise(total = sum(total_amt))
+summary
+
+my_plot4 <- summary %>% 
+  filter(cand_party_affiliation == "REP") %>%
+  ggplot(aes(x=year, y= total)) +
+  geom_bar()+
+  theme_bw() +
+  labs(x = NULL,
+       y = "Total Expenditures to Candidates") +
+  scale_y_continuous(breaks = c(0,2000000,4000000,6000000,8000000),
+                     labels = c("0","2M", "4M", "6M","8M")) +
+  #scale_x_date(breaks = c(2011-01-01,2012-01-01,2013-01-01),
+  #                   labels = c("2011","2012","2013")) +
+  #theme(axis.text.x = element_text(angle = 45, hjust =1)) +
+  facet_grid(~entity_type)
+
+my_plot4
 ```
 
 
