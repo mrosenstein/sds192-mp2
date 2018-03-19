@@ -64,17 +64,29 @@ my_plot2 <- contri_candi %>% ggplot(aes(x=year, y= total_amt)) +
   #geom_point(size =0.5) +
   geom_line() +
   theme_bw() +
+  labs(x = NULL,
+       y = "Total Expenditures to Candidates") +
+  scale_y_continuous(breaks = c(0,2000000,4000000,6000000,8000000),
+                     labels = c("0","2M", "4M", "6M","8M")) +
+  theme(axis.text.x = element_text(angle = 45, hjust =1)) +
   facet_grid(~cand_party_affiliation)
   
 my_plot2
 ```
+##
 ```{r}
 my_plot3 <- contri_candi %>% 
   filter(cand_party_affiliation == "REP") %>%
   ggplot(aes(x=year, y= total_amt)) +
   geom_line()+
   theme_bw() +
+  labs(x = NULL,
+       y = "Total Expenditures to Candidates") +
+  scale_y_continuous(breaks = c(0,2000000,4000000,6000000,8000000),
+                     labels = c("0","2M", "4M", "6M","8M")) +
+  theme(axis.text.x = element_text(angle = 45, hjust =1)) +
   facet_grid(~entity_type)
+
 my_plot3
 ```
 
