@@ -41,11 +41,11 @@ contri_candi <- contributions %>%
   summarize(total_amt = sum(transaction_amt)) %>%
   filter(!is.na(cand_party_affiliation))
            
+contri_candi <- contri_candi%>% ungroup()
 contri_candi <- contri_candi %>%
   mutate(cand_party_affiliation = case_when(
   cand_party_affiliation == "REP" ~ "R",
-  cand_party_affiliation == "DEM" ~ "D",
-  TRUE ~ cand_party_affiliation)
+  cand_party_affiliation == "DEM" ~ "D")
  )
 
 ```
