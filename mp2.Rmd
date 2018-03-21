@@ -56,7 +56,10 @@ contri_candi <- contributions %>%
 
 ### Figure 1: Contributions to candidates with different party affiliations
 ```{r}
-my_plot1 <- contri_candi %>% ggplot(aes(x=date, y= total_amt)) +
+graph_fun <- function(entity) {
+  contri_candi %>% 
+  filter(entity_type == entity) %>% 
+  ggplot(aes(x=date, y= total_amt)) +
   geom_line(color = "hotpink4") +
   theme_bw() +
   labs(x = NULL,
@@ -67,31 +70,15 @@ my_plot1 <- contri_candi %>% ggplot(aes(x=date, y= total_amt)) +
         panel.grid.major = element_line(colour = "grey94"),
         panel.grid.minor = element_line(colour = "white")) +
   facet_grid(~cand_party_affiliation)
-  
+}
+my_plot1 <- graph_fun("ORG")
 my_plot1
+#my_plot2 <- graph_fun("IND")
+#my_plot2
 ```
 
-### Figure 2: Contributions made by different entities
-```{r}
-my_plot2 <- contri_candi %>% 
-  filter(entity_type %in% c("ORG","PAC","COM"),
-         cand_party_affiliation %in% c("Democratic", "Republican")) %>%
-  ggplot(aes(x=date, y= total_amt)) +
-  geom_line()+
-  theme_bw() +
-  labs(x = NULL,
-       y = "Total Expenditures to Candidates") +
-  scale_y_continuous(breaks = c(0,2000000,4000000,6000000,8000000),
-                     labels = c("0","2M", "4M", "6M","8M")) +
-  #scale_x_date(breaks = c(2011-01-01,2012-01-01,2013-01-01),
-  #                   labels = c("2011","2012","2013")) +
-  theme(axis.text.x = element_text(angle = 45, hjust =1)) +
-  facet_grid( ~ cand_party_affiliation)
 
-my_plot2
-```
-
-### Figure 3: Contributions made by different states
+### Figure 2: Contributions made by different states
 ```{r}
 
 #read 52 state codes into local variable [includes DC (Washington D.C. and PR (Puerto Rico)]
@@ -119,11 +106,12 @@ contri_candi <- contri_candi %>%
 
 state.summary <- contri_candi %>%
   group_by(cand_party_affiliation, year, entity_type, full) %>%
-  summarize(total = sum(total_amt))
+  summarize(total = sum(total_amt)) %>%
+  filter(!is.na(total))
 
-myPalette <- colorRampPalette(rev(brewer.pal(9, "YlOrRd")))
+myPalette <- colorRampPalette(rev(brewer.pal(9, "RdGy")))
 
-my_plot3 <- state.summary %>% 
+my_plot2 <- state.summary %>% 
   filter(entity_type == "ORG",
          cand_party_affiliation == "Republican",
          year == 2012) %>%
@@ -144,7 +132,7 @@ my_plot3 <- state.summary %>%
   labs(x = "", y = "") +
   theme(panel.background = element_blank())
 
-my_plot3
+my_plot2
 ```
 
 The data represented in these visualizations originate from the Federal Election Commission. The data is focused around the 2011 - 2012 election cycle. The candidates are those who have registered with the Federal Election Commission or are present on an official ballot list from a given state's elections office. The contributions to candidates are ones that have been received from itemized committees, PAC contributions to a party committee, party transfers between state committees, and party transfers from a national committee to a state committee. The contributions highlighted in these visualizations are only independent expenditures advocating for election of the specified candidate. 
