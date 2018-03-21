@@ -102,8 +102,10 @@ state.summary <- contri_candi %>%
   summarize(total = sum(total_amt)) %>%
   filter(!is.na(total))
 
+# Create a custom color palette (diverging colors)
 myPalette <- colorRampPalette(rev(brewer.pal(9, "RdGy")))
 
+# Create
 my_plot2 <- state.summary %>% 
   filter(entity_type == "ORG",
          cand_party_affiliation == "Republican",
@@ -115,9 +117,9 @@ my_plot2 <- state.summary %>%
   scale_x_continuous(breaks = NULL) + 
   scale_y_continuous(breaks = NULL) +
   scale_fill_gradientn(colors = myPalette(4:9),
-                       breaks=c(0,50000000),
-                       labels=c("0","50M"),
-                       limits=c(0,50000000),
+                       breaks=c(1000,50000000),
+                       labels=c("1K","50M"),
+                       limits=c(1000,50000000),
                        #breaks = c(0,500,1000,5000,10000,50000,100000,10000000,50000000),
                        #labels = c("0","500","1K","5K","10K","50K","100K","10M","50M"),
                        #limits = c(0,42000000),
