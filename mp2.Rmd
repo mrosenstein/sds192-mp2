@@ -2,8 +2,9 @@
 title: "Mini Project 2"
 author: "Mae Rosenstein, Chelsey Chen, Talia Seshaiah"
 date: "March 22, 2018"
-output: html_document
----
+output:
+  html_document:
+    code_folding: show
 
 We looked at contribution amount to each candidates and how that differs by candidate's party affiliation. We also looked at how contributions change over time by using time series data.
 
@@ -119,11 +120,8 @@ Because the republican party revealed to receive the most contributions, the sec
 
 Key for Candidate Party Affiliation: 
 DEM = Democratic Party
-DFL = Democratic-Farmer-Labor
 IND = Independent 
 LIB = Libertarian Party
-NNE = None
-OTH = Other 
 REP = Republican Party 
 
 Key for Contribution Type to Candidates:  
