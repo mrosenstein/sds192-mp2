@@ -35,8 +35,10 @@ glimpse(contributions)
 
 contri_candi <- contributions %>% 
   filter(transaction_type == "24E",
-         transaction_amt >= 0) %>%
+         transaction_amt >= 0,
+         entity_type != "") %>%
   left_join(candidates, by = "cand_id") %>%
+  filter(cand_party_affiliation %in% c('REP','DEM','IND','LIB')) %>%
   select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type) %>%
   mutate(date = as.Date(transaction_dt, "%m%d%Y"),
          year = substr(date,0,4)) %>%
@@ -44,15 +46,18 @@ contri_candi <- contributions %>%
   mutate(cand_party_affiliation = ifelse(cand_party_affiliation == 'REP', 'R', cand_party_affiliation),
          cand_party_affiliation = ifelse(cand_party_affiliation == 'DEM', 'D', cand_party_affiliation)) %>%
   group_by(cand_name,cand_party_affiliation,date,year,entity_type) %>%
-  summarize(total_amt = sum(transaction_amt)) %>%
-  filter(!is.na(cand_party_affiliation))
+  summarize(total_amt = sum(transaction_amt))
            
+<<<<<<< HEAD
 contri_candi <- contri_candi %>%
   mutate(cand_party_affiliation = case_when(
   cand_party_affiliation == "REP" ~ "R",
   cand_party_affiliation == "DEM" ~ "D")
  )
 
+=======
+glimpse(contri_candi)
+>>>>>>> c44b7b9452a22decb3999a02a0d053350f1d7fa5
 ```
 
 ```{r}
