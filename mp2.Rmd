@@ -31,6 +31,7 @@ glimpse(contributions)
 
 
 ```{r}
+
 contri_candi <- contributions %>% 
   filter(transaction_type == "24E",
          transaction_amt >= 0,
@@ -45,7 +46,7 @@ contri_candi <- contributions %>%
          cand_party_affiliation = ifelse(cand_party_affiliation == 'DEM', 'D', cand_party_affiliation)) %>%
   group_by(cand_name,cand_party_affiliation,date,year,entity_type) %>%
   summarize(total_amt = sum(transaction_amt))
-           
+
 glimpse(contri_candi)
 ```
 
@@ -89,6 +90,7 @@ my_plot3 <- contri_candi %>%
 
 my_plot3
 ```
+
 ```{r}
 
 my_plot4 <-  contri_candi %>% 
@@ -109,5 +111,26 @@ my_plot4 <-  contri_candi %>%
 
 my_plot4
 ```
+The data represented in these visualizations originate from the Federal Election Commission. The data is focused around the 2011 - 2012 election cycle. The candidates are those who have registered with the Federal Election Commission or are present on an official ballot list from a given state's elections office. The contributions to candidates are ones that have been received from itemized committees, PAC contributions to a party committee, party transfers between state committees, and party transfers from a national committee to a state committee. The contributions highlighted in these visualizations are only independent expenditures advocating for election of the specified candidate. 
 
+This visualization displays the total amount of contributions by party affiliation. The contributions included in the visualization are from various types of contriubtors ranging from large organizations to individuals. The republican and democratic parties received the most contributions, however the republican party received the most contributions as seen in the visualization. 
 
+Because the republican party revealed to receive the most contributions, the second visualization displays which type of contributors contributed the most to the republican party. As seen in the visualization, organizations contributed the most to the republican party. 
+
+Key for Candidate Party Affiliation: 
+DEM = Democratic Party
+DFL = Democratic-Farmer-Labor
+IND = Independent 
+LIB = Libertarian Party
+NNE = None
+OTH = Other 
+REP = Republican Party 
+
+Key for Contribution Type to Candidates:  
+CAN = Candidate
+CCM = Candidate Committee
+COM = Committee
+IND = Individual (a person)
+ORG = Organization (not a committee and not a person)
+PAC = Political Action Committee
+PTY = Party Organization
