@@ -2,15 +2,10 @@
 title: "Mini Project 2"
 author: "Mae Rosenstein, Chelsey Chen, Talia Seshaiah"
 date: "March 22, 2018"
-<<<<<<< HEAD
 output:
   html_document:
     code_folding: show
-=======
-output: html_document
-code_folding: show
 ---
->>>>>>> e272005e1048aac5cece3a89b8b1c4b765dd37e3
 
 We looked at contribution amount to each candidates and how that differs by candidate's party affiliation. We also looked at how contributions change over time by using time series data.
 
@@ -181,21 +176,6 @@ my_plot4 <-  contri_candi %>%
 ```
 The data represented in these visualizations originate from the Federal Election Commission. The data is focused around the 2011 - 2012 election cycle. The candidates are those who have registered with the Federal Election Commission or are present on an official ballot list from a given state's elections office. The contributions to candidates are ones that have been received from itemized committees, PAC contributions to a party committee, party transfers between state committees, and party transfers from a national committee to a state committee. The contributions highlighted in these visualizations are only independent expenditures advocating for election of the specified candidate. 
 
-This visualization displays the total amount of contributions by party affiliation. The contributions included in the visualization are from various types of contriubtors ranging from large organizations to individuals. The republican and democratic parties received the most contributions, however the republican party received the most contributions as seen in the visualization. 
+This visualization displays the total amount of contributions by party affiliation. The data was filtered to span from January 1, 2011 to January 1, 2013. The contributions included in the visualization are from various types of contriubtors ranging from large organizations to individuals. The parties highlighted in the visualization are democratic party, republican party, libertarian party, and independent. The republican and democratic parties received the most contributions, however the republican party received the most contributions as seen in the visualization. These results are not surprising due to the fact the the democratic party and republican party are the primary political parties. 
 
-Because the republican party revealed to receive the most contributions, the second visualization displays which type of contributors contributed the most to the republican party. As seen in the visualization, organizations contributed the most to the republican party. 
-
-Key for Candidate Party Affiliation: 
-DEM = Democratic Party
-IND = Independent 
-LIB = Libertarian Party
-REP = Republican Party 
-
-Key for Contribution Type to Candidates:  
-CAN = Candidate
-CCM = Candidate Committee
-COM = Committee
-IND = Individual (a person)
-ORG = Organization (not a committee and not a person)
-PAC = Political Action Committee
-PTY = Party Organization
+Because the republican party and democratic party revealed to receive the most contributions, the following visualizations display the distribution of contributions from every state to each party.
