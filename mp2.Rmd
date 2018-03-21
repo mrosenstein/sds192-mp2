@@ -48,7 +48,10 @@ contri_candi <- contributions %>%
 ## Data Visualizations
 ### Figure 1: The contribution amount given to the republican party, democratic party, independent party, and libertarian party from January 1, 2011 to January 1, 2013.
 ```{r}
-my_plot1 <- contri_candi %>% ggplot(aes(x=date, y= total_amt)) +
+graph_fun <- function(entity) {
+  contri_candi %>% 
+  filter(entity_type == entity) %>% 
+  ggplot(aes(x=date, y= total_amt)) +
   geom_line(color = "hotpink4") +
   theme_bw() +
   labs(x = NULL,
@@ -59,32 +62,16 @@ my_plot1 <- contri_candi %>% ggplot(aes(x=date, y= total_amt)) +
         panel.grid.major = element_line(colour = "grey94"),
         panel.grid.minor = element_line(colour = "white")) +
   facet_grid(~cand_party_affiliation)
-  
+}
+my_plot1 <- graph_fun("ORG")
 my_plot1
+#my_plot2 <- graph_fun("IND")
+#my_plot2
 ```
 This visualization displays the total amount of contributions by party affiliation. The data was filtered to span from January 1, 2011 to January 1, 2013. The contributions included in the visualization are from various types of contriubtors ranging from large organizations to individuals. The parties highlighted in the visualization are democratic party, republican party, libertarian party, and independent. The republican and democratic parties received the most contributions, however the republican party received the most contributions as seen in the visualization. These results are not surprising due to the fact the the democratic party and republican party are the primary political parties. 
 
-### Figure 2: Contributions made by different entities
-```{r}
-my_plot2 <- contri_candi %>% 
-  filter(entity_type %in% c("ORG","PAC","COM"),
-         cand_party_affiliation %in% c("Democratic", "Republican")) %>%
-  ggplot(aes(x=date, y= total_amt)) +
-  geom_line()+
-  theme_bw() +
-  labs(x = NULL,
-       y = "Total Expenditures to Candidates") +
-  scale_y_continuous(breaks = c(0,2000000,4000000,6000000,8000000),
-                     labels = c("0","2M", "4M", "6M","8M")) +
-  #scale_x_date(breaks = c(2011-01-01,2012-01-01,2013-01-01),
-  #                   labels = c("2011","2012","2013")) +
-  theme(axis.text.x = element_text(angle = 45, hjust =1)) +
-  facet_grid( ~ cand_party_affiliation)
 
-my_plot2
-```
-
-### Figure 3: Contributions made by different states
+### Figure 2: Contributions made by different states
 ```{r}
 
 #read 52 state codes into local variable [includes DC (Washington D.C. and PR (Puerto Rico)]
@@ -112,11 +99,12 @@ contri_candi <- contri_candi %>%
 
 state.summary <- contri_candi %>%
   group_by(cand_party_affiliation, year, entity_type, full) %>%
-  summarize(total = sum(total_amt))
+  summarize(total = sum(total_amt)) %>%
+  filter(!is.na(total))
 
-myPalette <- colorRampPalette(rev(brewer.pal(9, "YlOrRd")))
+myPalette <- colorRampPalette(rev(brewer.pal(9, "RdGy")))
 
-my_plot3 <- state.summary %>% 
+my_plot2 <- state.summary %>% 
   filter(entity_type == "ORG",
          cand_party_affiliation == "Republican",
          year == 2012) %>%
@@ -137,28 +125,15 @@ my_plot3 <- state.summary %>%
   labs(x = "", y = "") +
   theme(panel.background = element_blank())
 
-my_plot3
+my_plot2
 ```
-## Ignore this plot for now
-```{r}
-my_plot4 <-  contri_candi %>% 
-  filter(cand_party_affiliation == "R",
-         year == 2012) %>%
-  ggplot(aes(x=date, y= total_amt)) +
-  geom_line()+
-  #geom_bar(stat = "identity")+
-  theme_bw() +
-  labs(x = NULL,
-       y = "Total Expenditures to Candidates") +
-  scale_y_continuous(breaks = c(0,2000000,4000000,6000000,8000000),
-                     labels = c("0","2M", "4M", "6M","8M")) +
-  #scale_x_date(breaks = c(2011-01-01,2012-01-01,2013-01-01),
-  #                   labels = c("2011","2012","2013")) +
-  #theme(axis.text.x = element_text(angle = 45, hjust =1)) +
-  facet_grid(~entity_type)
 
+<<<<<<< HEAD
 #my_plot4
 ```
 Because the republican party revealed to receive the most contributions, the following visualization displays the distribution of contributions from every state to each party.The contributions highlighted in this visualzation are only contributions from organizations. In the data visualzation of the republican party, Maryland clearly recived the most contributions. 
+=======
+Because the republican party and democratic party revealed to receive the most contributions, the following visualizations display the distribution of contributions from every state to each party.The contributions highlighted in this visualzation are only contributions from organizations. In the data visualzation of the republican party, Maryland clearly recived the most contributions. 
+>>>>>>> b6d1027357cdbe013692bac01260cbfff92b6381
 
 Link to GitHub repository: https://github.com/mrosenstein/sds192-mp2.git
