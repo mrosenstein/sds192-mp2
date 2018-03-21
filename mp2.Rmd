@@ -48,12 +48,8 @@ contri_candi <- contributions %>%
 ## Data Visualizations
 ### Figure 1: The contribution amount given to the republican party, democratic party, independent party, and libertarian party from January 1, 2011 to December 31, 2012.
 ```{r}
-<<<<<<< HEAD
-graph_fun <- function(entity,colour){
-=======
 # Write a function to plot the graph given a specific source of contribution and a color
 graph_fun <- function(entity, colour){
->>>>>>> 64d180c06f5d77ca34fef24403c79e2dd612e349
   contri_candi %>% 
   filter(entity_type == entity) %>% 
   ggplot(aes(x=date, y= total_amt)) +
@@ -68,16 +64,15 @@ graph_fun <- function(entity, colour){
         panel.grid.minor = element_line(colour = "white")) +
   facet_grid(~cand_party_affiliation)
 }
-<<<<<<< HEAD
+
 my_plot1 <- graph_fun("ORG","hotpink4")
 my_plot1
-=======
 
 # Call the graphing function for contributions made by orgnizations
 my_plot1 <- graph_fun("ORG","hotpink4")
 my_plot1
 # # Call the graphing function for contributions made by individuals
->>>>>>> 64d180c06f5d77ca34fef24403c79e2dd612e349
+
 my_plot2 <- graph_fun("IND","navyblue")
 my_plot2
 ```
@@ -123,7 +118,7 @@ my_plot3 <- state.summary %>%
   filter(entity_type == "ORG",
          cand_party_affiliation == "Republican",
          year == 2012) %>%
-  ggplot(aes(map_id = full)) +
+  ggplot(aes(map_id = state)) +
   geom_map(aes(fill = total), map = fifty_states) +
   expand_limits(x = fifty_states$long, y = fifty_states$lat) +
   coord_map() +
