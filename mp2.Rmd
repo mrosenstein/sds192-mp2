@@ -41,10 +41,10 @@ contri_candi <- contributions %>%
          year = substr(date,0,4)) %>%
   select(-transaction_dt) %>%
   mutate(cand_party_affiliation = ifelse(cand_party_affiliation == 'REP', 'R', cand_party_affiliation),
-         cand_party_affiliation = ifelse(cand_party_affiliation == 'DEM', 'D', cand_party_affiliation)) %>%
+         cand_party_affiliation = ifelse(cand_party_affiliation == 'DEM', 'D', cand_party_affiliation),
+         cand_party_affiliation = ifelse(cand_party_affiliation == '', 'Unspecified', cand_party_affiliation)) %>%
   group_by(cand_name,cand_party_affiliation,date,year,entity_type) %>%
-  summarize(total_amt = sum(transaction_amt)) %>%
-  filter(!is.na(cand_party_affiliation))
+  summarize(total_amt = sum(transaction_amt))
            
 glimpse(contri_candi)
 
