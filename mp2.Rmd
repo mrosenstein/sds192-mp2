@@ -1,7 +1,7 @@
 ---
 title: "Mini Project 2"
 author: "Mae Rosenstein, Chelsey Chen, Talia Seshaiah"
-date: "March 7, 2018"
+date: "March 22, 2018"
 output: html_document:
     code_folding: show
 ---
@@ -31,6 +31,7 @@ glimpse(contributions)
 
 
 ```{r}
+
 contri_candi <- contributions %>% 
   left_join(candidates, by = "cand_id") %>%
   filter(transaction_type == "24E") %>%
@@ -41,12 +42,12 @@ contri_candi <- contributions %>%
   summarize(total_amt = sum(transaction_amt)) %>%
   filter(!is.na(cand_party_affiliation))
            
-contri_candi <- contri_candi%>% ungroup()
 contri_candi <- contri_candi %>%
   mutate(cand_party_affiliation = case_when(
   cand_party_affiliation == "REP" ~ "R",
   cand_party_affiliation == "DEM" ~ "D")
  )
+
 
 ```
 
@@ -75,5 +76,31 @@ my_plot3 <- contri_candi %>%
   facet_grid(~entity_type)
 my_plot3
 ```
+The data represented in these visualizations originate from the Federal Election Commission. The data is focused around the 2011 - 2012 election cycle. The candidates are those who have registered with the Federal Election Commission or are present on an official ballot list from a given state's elections office. The contributions to candidates are ones that have been received from itemized committees, PAC contributions to a party committee, party transfers between state committees, and party transfers from a national committee to a state committee. The contributions highlighted in these visualizations are only independent expenditures advocating for election of the specified candidate. 
+
+This visualization displays the total amount of contributions by party affiliation. The contributions included in the visualization are from various types of contriubtors ranging from large organizations to individuals. The republican and democratic parties received the most contributions, however the republican party received the most contributions as seen in the visualization. 
+
+Because the republican party revealed to receive the most contributions, the second visualization displays which type of contributors contributed the most to the republican party. As seen in the visualization, organizations contributed the most to the republican party. 
+
+Key for Candidate Party Affiliation: 
+DEM = Democratic Party
+DFL = Democratic-Farmer-Labor
+IND = Independent 
+LIB = Libertarian Party
+NNE = None
+OTH = Other 
+REP = Republican Party 
+
+Key for Contribution Type to Candidates:  
+CAN = Candidate
+CCM = Candidate Committee
+COM = Committee
+IND = Individual (a person)
+ORG = Organization (not a committee and not a person)
+PAC = Political Action Committee
+PTY = Party Organization
+
+
+
 
 
