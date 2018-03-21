@@ -22,7 +22,7 @@ library(mapproj)
 library(RColorBrewer)
 ```
 ## Data Wrangling 
-###We first filtered the data to only include "24E" which are only independent expenditures advocating for the election of a candidate. We then filtered only looked at positive transaction amount, therefore eliminating out any donations that were returned. We joined the candidates dataset with contributions dataset by candidate's id number which was a variable present in both datasets. We selected variables that we were particularly interested in looking at: candidate's party affiliation, transaction amount, transaction date, candidate name, and the source of the contributions (entity type) which we filtered to be just organizations.We then mutated the transaction date from numeric numbers to strings, and renamed the candidate party affiliation names to display the full names rather than the abbreviation. 
+We first filtered the data to only include "24E" which are only independent expenditures advocating for the election of a candidate. We then filtered only looked at positive transaction amount, therefore eliminating out any donations that were returned. We joined the candidates dataset with contributions dataset by candidate's id number which was a variable present in both datasets. We selected variables that we were particularly interested in looking at: candidate's party affiliation, transaction amount, transaction date, candidate name, and the source of the contributions (entity type) which we filtered to be just organizations.We then mutated the transaction date from numeric numbers to strings, and renamed the candidate party affiliation names to display the full names rather than the abbreviation. 
 
 ```{r}
 contri_candi <- contributions %>% 
