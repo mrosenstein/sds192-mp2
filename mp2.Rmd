@@ -46,9 +46,14 @@ contri_candi <- contributions %>%
 ```
 
 ## Data Visualizations
-### Figure 1: The contribution amount given to the republican party, democratic party, independent party, and libertarian party from January 1, 2011 to January 1, 2013.
+### Figure 1: The contribution amount given to the republican party, democratic party, independent party, and libertarian party from January 1, 2011 to December 31, 2012.
 ```{r}
+<<<<<<< HEAD
 graph_fun <- function(entity,colour){
+=======
+# Write a function to plot the graph given a specific source of contribution and a color
+graph_fun <- function(entity, colour){
+>>>>>>> 64d180c06f5d77ca34fef24403c79e2dd612e349
   contri_candi %>% 
   filter(entity_type == entity) %>% 
   ggplot(aes(x=date, y= total_amt)) +
@@ -63,8 +68,16 @@ graph_fun <- function(entity,colour){
         panel.grid.minor = element_line(colour = "white")) +
   facet_grid(~cand_party_affiliation)
 }
+<<<<<<< HEAD
 my_plot1 <- graph_fun("ORG","hotpink4")
 my_plot1
+=======
+
+# Call the graphing function for contributions made by orgnizations
+my_plot1 <- graph_fun("ORG","hotpink4")
+my_plot1
+# # Call the graphing function for contributions made by individuals
+>>>>>>> 64d180c06f5d77ca34fef24403c79e2dd612e349
 my_plot2 <- graph_fun("IND","navyblue")
 my_plot2
 ```
@@ -73,14 +86,13 @@ This visualization displays the total amount of contributions by party affiliati
 
 ### Figure 2: Contributions made by different states
 ```{r}
-
-#read 52 state codes into local variable [includes DC (Washington D.C. and PR (Puerto Rico)]
-st.codes<-data.frame(state=as.factor(c("AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
+# Read 52 state codes into a local dataframe [includes DC (Washington D.C. and PR (Puerto Rico)]
+st.codes<-data.frame(abb=as.factor(c("AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
                                          "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME",
                                          "MI", "MN", "MO", "MS",  "MT", "NC", "ND", "NE", "NH", "NJ", "NM",
                                          "NV", "NY", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN",
                                          "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY")),
-                      full=as.factor(c("alaska","alabama","arkansas","arizona","california","colorado",
+                      state=as.factor(c("alaska","alabama","arkansas","arizona","california","colorado",
                                        "connecticut","district of columbia","delaware","florida","georgia",
                                        "hawaii","iowa","idaho","illinois","indiana","kansas","kentucky",
                                        "louisiana","massachusetts","maryland","maine","michigan","minnesota",
@@ -91,22 +103,23 @@ st.codes<-data.frame(state=as.factor(c("AK", "AL", "AR", "AZ", "CA", "CO", "CT",
                                        "utah","virginia","vermont","washington","wisconsin",
                                        "west virginia","wyoming"))
                      )
-#contri_candi$state2 <- plyr::mapvalues(contri_candi$state,from = st.codes$state, to = st.codes$full)
 
+# Join the created st.codes dataframe with our dataframe by the state name
 contri_candi <- contri_candi %>%
-  right_join(st.codes, full = state) %>%
-  select(-state)
+  right_join(st.codes, state = state) %>%
+  select(-abb)
 
+# Create a summary dataframe calculating total contributions for a given party affiliation,year,source,and state
 state.summary <- contri_candi %>%
-  group_by(cand_party_affiliation, year, entity_type, full) %>%
+  group_by(cand_party_affiliation, year, entity_type, state) %>%
   summarize(total = sum(total_amt)) %>%
   filter(!is.na(total))
 
 # Create a custom color palette (diverging colors)
 myPalette <- colorRampPalette(rev(brewer.pal(9, "RdGy")))
 
-# Create
-my_plot2 <- state.summary %>% 
+# Create a map showing contributions to Republican candidates made by orgnizations in 2012 by different states
+my_plot3 <- state.summary %>% 
   filter(entity_type == "ORG",
          cand_party_affiliation == "Republican",
          year == 2012) %>%
@@ -120,14 +133,11 @@ my_plot2 <- state.summary %>%
                        breaks=c(1000,50000000),
                        labels=c("1K","50M"),
                        limits=c(1000,50000000),
-                       #breaks = c(0,500,1000,5000,10000,50000,100000,10000000,50000000),
-                       #labels = c("0","500","1K","5K","10K","50K","100K","10M","50M"),
-                       #limits = c(0,42000000),
                        guide = guide_colorbar(title = "Amount of Contributions")) +
   labs(x = "", y = "") +
   theme(panel.background = element_blank())
 
-my_plot2
+my_plot3
 ```
 
 
