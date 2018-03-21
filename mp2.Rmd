@@ -2,8 +2,7 @@
 title: "Mini Project 2"
 author: "Mae Rosenstein, Chelsey Chen, Talia Seshaiah"
 date: "March 22, 2018"
-output: html_document:
-    code_folding: show
+output: html_document
 ---
 
 We looked at contribution amount to each candidates and how that differs by candidate's party affiliation. We also looked at how contributions change over time by using time series data.
@@ -48,11 +47,11 @@ contri_candi <- contributions %>%
   group_by(cand_name,cand_party_affiliation,date,year,entity_type) %>%
   summarize(total_amt = sum(transaction_amt))
            
-<<<<<<< HEAD
 contri_candi <- contri_candi %>%
   mutate(cand_party_affiliation = case_when(
-  cand_party_affiliation == "REP" ~ "R",
-  cand_party_affiliation == "DEM" ~ "D")
+  cand_party_affiliation == "REP" ~ "Republican",
+  cand_party_affiliation == "DEM" ~ "Democratic")
+  
  )
 
 =======
