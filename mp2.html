@@ -128,10 +128,9 @@ $(document).ready(function () {
 
 <p>We looked at contribution amount to each candidates and how that differs by candidate’s party affiliation. We also looked at how contributions change over time by using time series data.</p>
 <pre class="r"><code>library(tidyverse)
-glimpse(house_elections)
-glimpse(candidates)
-glimpse(committees)
-glimpse(contributions)</code></pre>
+library(fiftystater)
+library(mapproj)
+library(RColorBrewer)</code></pre>
 <div id="data-wrangling" class="section level2">
 <h2>Data wrangling</h2>
 <ol style="list-style-type: decimal">
@@ -202,17 +201,7 @@ my_plot2</code></pre>
 </div>
 <div id="figure-3-contributions-made-by-different-states" class="section level3">
 <h3>Figure 3: Contributions made by different states</h3>
-<pre class="r"><code>library(fiftystater)
-library(mapproj)</code></pre>
-<pre><code>## Loading required package: maps</code></pre>
-<pre><code>## 
-## Attaching package: 'maps'</code></pre>
-<pre><code>## The following object is masked from 'package:purrr':
-## 
-##     map</code></pre>
-<pre class="r"><code>library(RColorBrewer)
-
-#read 52 state codes into local variable [includes DC (Washington D.C. and PR (Puerto Rico)]
+<pre class="r"><code>#read 52 state codes into local variable [includes DC (Washington D.C. and PR (Puerto Rico)]
 st.codes&lt;-data.frame(state=as.factor(c(&quot;AK&quot;, &quot;AL&quot;, &quot;AR&quot;, &quot;AZ&quot;, &quot;CA&quot;, &quot;CO&quot;, &quot;CT&quot;, &quot;DC&quot;, &quot;DE&quot;, &quot;FL&quot;, &quot;GA&quot;,
                                          &quot;HI&quot;, &quot;IA&quot;, &quot;ID&quot;, &quot;IL&quot;, &quot;IN&quot;, &quot;KS&quot;, &quot;KY&quot;, &quot;LA&quot;, &quot;MA&quot;, &quot;MD&quot;, &quot;ME&quot;,
                                          &quot;MI&quot;, &quot;MN&quot;, &quot;MO&quot;, &quot;MS&quot;,  &quot;MT&quot;, &quot;NC&quot;, &quot;ND&quot;, &quot;NE&quot;, &quot;NH&quot;, &quot;NJ&quot;, &quot;NM&quot;,
