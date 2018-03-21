@@ -12,6 +12,7 @@ Data wrangling:
 1) We first filter out
 2) Join the candidates dataset with contribution dataset by candidate's id number;
 3) We only looked at transaction type 24E, which is independent expenditure advocating election of candidate. 
+4) We only looked at positive transaction amount, therefore filtering out donations that are returned.
 4) We only select variables that we are interestd in looking at: candidate's party affiliation, transaction amount, transaction date, candidate name, and the source of the contributions (the entity type (CAN, CCM, COM, ORG, PAC, PTY));
 5) We mutate the transaction date from numeric numbers to strings;
 ```{r, include=FALSE}
@@ -32,25 +33,21 @@ glimpse(contributions)
 
 ```{r}
 contri_candi <- contributions %>% 
+  filter(transaction_type == "24E",
+         transaction_amt >= 0) %>%
   left_join(candidates, by = "cand_id") %>%
-  filter(transaction_type == "24E") %>%
   select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type) %>%
   mutate(date = as.Date(transaction_dt, "%m%d%Y"),
          year = substr(date,0,4)) %>%
   select(-transaction_dt) %>%
+  mutate(cand_party_affiliation = ifelse(cand_party_affiliation == 'REP', 'R', cand_party_affiliation),
+         cand_party_affiliation = ifelse(cand_party_affiliation == 'DEM', 'D', cand_party_affiliation)) %>%
   group_by(cand_name,cand_party_affiliation,date,year,entity_type) %>%
   summarize(total_amt = sum(transaction_amt)) %>%
   filter(!is.na(cand_party_affiliation))
            
 glimpse(contri_candi)
 
-
-#contri_candi <- contri_candi %>%
-#  mutate(cand_party_affiliation = case_when(
-#    cand_party_affiliation == "REP" ~ "R",
-#    cand_party_affiliation == "DEM" ~ "D",
-#    TRUE ~ cand_party_affiliation)
-#  )
 ```
 
 ```{r}
