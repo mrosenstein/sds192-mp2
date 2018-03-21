@@ -2,27 +2,26 @@
 title: "Mini Project 2"
 author: "Mae Rosenstein, Chelsey Chen, Talia Seshaiah"
 date: "March 22, 2018"
+<<<<<<< HEAD
 output:
   html_document:
     code_folding: show
+=======
+output: html_document
+code_folding: show
+---
+>>>>>>> e272005e1048aac5cece3a89b8b1c4b765dd37e3
 
 We looked at contribution amount to each candidates and how that differs by candidate's party affiliation. We also looked at how contributions change over time by using time series data.
 
-Data wrangling:
-1) We first filter out
-2) Join the candidates dataset with contribution dataset by candidate's id number;
-3) We only looked at transaction type 24E, which is independent expenditure advocating election of candidate. 
-4) We only looked at positive transaction amount, therefore filtering out donations that are returned.
-4) We only select variables that we are interestd in looking at: candidate's party affiliation, transaction amount, transaction date, candidate name, and the source of the contributions (the entity type (CAN, CCM, COM, ORG, PAC, PTY));
-5) We mutate the transaction date from numeric numbers to strings;
-```{r, include=FALSE}
+```{r, include=FALSE, message = FALSE, warning = FALSE}
 load("house_elections.rda")
 load("candidates.rda")
 load("committees.rda")
 load("contributions.rda")
 ```
 
-```{r}
+```{r, message = FALSE, warning = FALSE, results = 'hide'}
 library(tidyverse)
 glimpse(house_elections)
 glimpse(candidates)
@@ -30,53 +29,60 @@ glimpse(committees)
 glimpse(contributions)
 ```
 
+## Data wrangling
+
+1) We first filter out
+2) Join the candidates dataset with contribution dataset by candidate's id number;
+3) We only looked at transaction type 24E, which is independent expenditure advocating election of candidate. 
+4) We only looked at positive transaction amount, therefore filtering out donations that are returned.
+4) We only select variables that we are interestd in looking at: candidate's party affiliation, transaction amount, transaction date, candidate name, and the source of the contributions (the entity type (CAN, CCM, COM, ORG, PAC, PTY));
+5) We mutate the transaction date from numeric numbers to strings;
 
 ```{r}
-
 contri_candi <- contributions %>% 
   filter(transaction_type == "24E",
          transaction_amt >= 0,
          entity_type != "") %>%
   left_join(candidates, by = "cand_id") %>%
   filter(cand_party_affiliation %in% c('REP','DEM','IND','LIB')) %>%
-  select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type) %>%
+  select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type,state) %>%
   mutate(date = as.Date(transaction_dt, "%m%d%Y"),
          year = substr(date,0,4)) %>%
   select(-transaction_dt) %>%
-  mutate(cand_party_affiliation = ifelse(cand_party_affiliation == 'REP', 'R', cand_party_affiliation),
-         cand_party_affiliation = ifelse(cand_party_affiliation == 'DEM', 'D', cand_party_affiliation)) %>%
-  group_by(cand_name,cand_party_affiliation,date,year,entity_type) %>%
+  filter(date <= '2012-12-31',
+         date >= '2011-01-01') %>%
+  mutate(cand_party_affiliation = ifelse(cand_party_affiliation == 'REP', 'Republican', cand_party_affiliation),
+         cand_party_affiliation = ifelse(cand_party_affiliation == 'DEM', 'Democratic', cand_party_affiliation),
+         cand_party_affiliation = ifelse(cand_party_affiliation == 'LIB', 'Libertarian', cand_party_affiliation),
+         cand_party_affiliation = ifelse(cand_party_affiliation == 'IND', 'Independent', cand_party_affiliation)) %>%
+  group_by(cand_name,cand_party_affiliation,date,year,entity_type,state) %>%
   summarize(total_amt = sum(transaction_amt))
-
-glimpse(contri_candi)
 ```
 
+## Data Visualization
+
+### Figure 1: Contributions to candidates with different party affiliations
 ```{r}
-my_plot <- contri_candi %>% ggplot(aes(x=date, y= total_amt,color=cand_party_affiliation)) +
-  geom_point() +
-  theme_bw()
-  
-my_plot
-```
-### Contributions to candidates with different party affiliations
-```{r}
-my_plot2 <- contri_candi %>% ggplot(aes(x=date, y= total_amt)) +
-  #geom_point(size =0.5) +
-  geom_line() +
+my_plot1 <- contri_candi %>% ggplot(aes(x=date, y= total_amt)) +
+  geom_line(color = "hotpink4") +
   theme_bw() +
   labs(x = NULL,
-       y = "Total Expenditures to Candidates") +
+       y = "Total Amount of Contributions to Candidates (US dollar)") +
   scale_y_continuous(breaks = c(0,2000000,4000000,6000000,8000000),
                      labels = c("0","2M", "4M", "6M","8M")) +
-  theme(axis.text.x = element_text(angle = 45, hjust =1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust =1),
+        panel.grid.major = element_line(colour = "grey94"),
+        panel.grid.minor = element_line(colour = "white")) +
   facet_grid(~cand_party_affiliation)
   
-my_plot2
+my_plot1
 ```
-### Contributions made by different entities
+
+### Figure 2: Contributions made by different entities
 ```{r}
 my_plot3 <- contri_candi %>% 
-  filter(cand_party_affiliation == "R") %>%
+  filter(entity_type %in% c("ORG","PAC","COM"),
+         cand_party_affiliation %in% c("Democratic", "Republican")) %>%
   ggplot(aes(x=date, y= total_amt)) +
   geom_line()+
   theme_bw() +
@@ -87,11 +93,72 @@ my_plot3 <- contri_candi %>%
   #scale_x_date(breaks = c(2011-01-01,2012-01-01,2013-01-01),
   #                   labels = c("2011","2012","2013")) +
   theme(axis.text.x = element_text(angle = 45, hjust =1)) +
-  facet_grid(~entity_type)
+  facet_grid( ~ cand_party_affiliation)
 
 my_plot3
 ```
 
+### Figure 3: Contributions made by different states
+```{r}
+library(fiftystater)
+library(mapproj)
+
+#read 52 state codes into local variable [includes DC (Washington D.C. and PR (Puerto Rico)]
+st.codes<-data.frame(state=as.factor(c("AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
+                                         "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME",
+                                         "MI", "MN", "MO", "MS",  "MT", "NC", "ND", "NE", "NH", "NJ", "NM",
+                                         "NV", "NY", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN",
+                                         "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY")),
+                      full=as.factor(c("alaska","alabama","arkansas","arizona","california","colorado",
+                                       "connecticut","district of columbia","delaware","florida","georgia",
+                                       "hawaii","iowa","idaho","illinois","indiana","kansas","kentucky",
+                                       "louisiana","massachusetts","maryland","maine","michigan","minnesota",
+                                       "missouri","mississippi","montana","north carolina","north dakota",
+                                       "nebraska","new hampshire","new jersey","new mexico","nevada",
+                                       "new york","ohio","oklahoma","oregon","pennsylvania","puerto rico",
+                                       "rhode island","south carolina","south dakota","tennessee","texas",
+                                       "utah","virginia","vermont","washington","wisconsin",
+                                       "west virginia","wyoming"))
+                     )
+#contri_candi$state2 <- plyr::mapvalues(contri_candi$state,from = st.codes$state, to = st.codes$full)
+
+contri_candi <- contri_candi %>%
+  right_join(st.codes, full = state) %>%
+  select(-state)
+
+state.summary <- contri_candi %>%
+  group_by(cand_party_affiliation, year, entity_type, full) %>%
+  summarize(total = sum(total_amt))
+
+myPalette <- colorRampPalette(rev(brewer.pal(11, "YlOrRd")))
+
+my_plot3 <- state.summary %>% 
+  filter(entity_type == "ORG",
+         cand_party_affiliation == "Republican",
+         year == 2012) %>%
+  ggplot(aes(map_id = full)) +
+  geom_map(aes(fill = total), map = fifty_states) +
+  expand_limits(x = fifty_states$long, y = fifty_states$lat) +
+  coord_map() +
+  scale_x_continuous(breaks = NULL) + 
+  scale_y_continuous(breaks = NULL) +
+  scale_fill_gradientn(colors = myPalette(4:9),
+                       breaks=c(0,50000000),
+                       labels=c("0","50M"),
+                       limits=c(0,50000000),
+                       #breaks = c(0,500,1000,5000,10000,50000,100000,10000000,50000000),
+                       #labels = c("0","500","1K","5K","10K","50K","100K","10M","50M"),
+                       #limits = c(0,42000000),
+                       guide = guide_colorbar(title = "Amount of Contributions")) +
+  labs(x = "", y = "") +
+  theme(panel.background = element_blank())
+
+my_plot3
+```
+
+
+
+## Ignore this plot for now
 ```{r}
 
 my_plot4 <-  contri_candi %>% 
@@ -110,7 +177,7 @@ my_plot4 <-  contri_candi %>%
   #theme(axis.text.x = element_text(angle = 45, hjust =1)) +
   facet_grid(~entity_type)
 
-my_plot4
+#my_plot4
 ```
 The data represented in these visualizations originate from the Federal Election Commission. The data is focused around the 2011 - 2012 election cycle. The candidates are those who have registered with the Federal Election Commission or are present on an official ballot list from a given state's elections office. The contributions to candidates are ones that have been received from itemized committees, PAC contributions to a party committee, party transfers between state committees, and party transfers from a national committee to a state committee. The contributions highlighted in these visualizations are only independent expenditures advocating for election of the specified candidate. 
 
