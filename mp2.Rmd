@@ -15,12 +15,11 @@ load("committees.rda")
 load("contributions.rda")
 ```
 
-```{r, message = FALSE, warning = FALSE, results = 'hide'}
+```{r, message = FALSE, warning = FALSE}
 library(tidyverse)
-glimpse(house_elections)
-glimpse(candidates)
-glimpse(committees)
-glimpse(contributions)
+library(fiftystater)
+library(mapproj)
+library(RColorBrewer)
 ```
 
 ## Data wrangling
@@ -94,9 +93,6 @@ my_plot2
 
 ### Figure 3: Contributions made by different states
 ```{r}
-library(fiftystater)
-library(mapproj)
-library(RColorBrewer)
 
 #read 52 state codes into local variable [includes DC (Washington D.C. and PR (Puerto Rico)]
 st.codes<-data.frame(state=as.factor(c("AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
