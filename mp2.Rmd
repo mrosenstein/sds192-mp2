@@ -2,15 +2,9 @@
 title: "Mini Project 2"
 author: "Mae Rosenstein, Chelsey Chen, Talia Seshaiah"
 date: "March 22, 2018"
-<<<<<<< HEAD
-output:
-  html_document:
-    code_folding: show
-=======
 output: html_document
 code_folding: show
 ---
->>>>>>> e272005e1048aac5cece3a89b8b1c4b765dd37e3
 
 We looked at contribution amount to each candidates and how that differs by candidate's party affiliation. We also looked at how contributions change over time by using time series data.
 
