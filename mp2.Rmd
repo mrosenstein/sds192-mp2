@@ -42,21 +42,18 @@ contri_candi <- contributions %>%
   mutate(date = as.Date(transaction_dt, "%m%d%Y"),
          year = substr(date,0,4)) %>%
   select(-transaction_dt) %>%
-  mutate(cand_party_affiliation = ifelse(cand_party_affiliation == 'REP', 'R', cand_party_affiliation),
-         cand_party_affiliation = ifelse(cand_party_affiliation == 'DEM', 'D', cand_party_affiliation)) %>%
+  filter(date <= '2012-12-31',
+         date >= '2011-01-01') %>%
+  mutate(cand_party_affiliation = ifelse(cand_party_affiliation == 'REP', 'Republican', cand_party_affiliation),
+         cand_party_affiliation = ifelse(cand_party_affiliation == 'DEM', 'Democratic', cand_party_affiliation),
+         cand_party_affiliation = ifelse(cand_party_affiliation == 'LIB', 'Libertarian', cand_party_affiliation),
+         cand_party_affiliation = ifelse(cand_party_affiliation == 'IND', 'Independent', cand_party_affiliation)) %>%
   group_by(cand_name,cand_party_affiliation,date,year,entity_type) %>%
   summarize(total_amt = sum(transaction_amt))
 
 glimpse(contri_candi)
 ```
 
-```{r}
-my_plot <- contri_candi %>% ggplot(aes(x=date, y= total_amt,color=cand_party_affiliation)) +
-  geom_point() +
-  theme_bw()
-  
-my_plot
-```
 ### Contributions to candidates with different party affiliations
 ```{r}
 my_plot2 <- contri_candi %>% ggplot(aes(x=date, y= total_amt)) +
