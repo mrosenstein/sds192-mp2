@@ -48,11 +48,11 @@ contri_candi <- contributions %>%
 ## Data Visualizations
 ### Figure 1: The contribution amount given to the republican party, democratic party, independent party, and libertarian party from January 1, 2011 to January 1, 2013.
 ```{r}
-graph_fun <- function(entity) {
+graph_fun <- function(entity,colour){
   contri_candi %>% 
   filter(entity_type == entity) %>% 
   ggplot(aes(x=date, y= total_amt)) +
-  geom_line(color = "hotpink4") +
+  geom_line(color = colour) +
   theme_bw() +
   labs(x = NULL,
        y = "Total Amount of Contributions to Candidates (US dollar)") +
@@ -63,10 +63,10 @@ graph_fun <- function(entity) {
         panel.grid.minor = element_line(colour = "white")) +
   facet_grid(~cand_party_affiliation)
 }
-my_plot1 <- graph_fun("ORG")
+my_plot1 <- graph_fun("ORG","hotpink4")
 my_plot1
-#my_plot2 <- graph_fun("IND")
-#my_plot2
+my_plot2 <- graph_fun("IND","navyblue")
+my_plot2
 ```
 This visualization displays the total amount of contributions by party affiliation. The data was filtered to span from January 1, 2011 to January 1, 2013. The contributions included in the visualization are from various types of contriubtors ranging from large organizations to individuals. The parties highlighted in the visualization are democratic party, republican party, libertarian party, and independent. The republican and democratic parties received the most contributions, however the republican party received the most contributions as seen in the visualization. These results are not surprising due to the fact the the democratic party and republican party are the primary political parties. 
 
@@ -128,12 +128,7 @@ my_plot2 <- state.summary %>%
 my_plot2
 ```
 
-<<<<<<< HEAD
-#my_plot4
-```
-Because the republican party revealed to receive the most contributions, the following visualization displays the distribution of contributions from every state to each party.The contributions highlighted in this visualzation are only contributions from organizations. In the data visualzation of the republican party, Maryland clearly recived the most contributions. 
-=======
+
 Because the republican party and democratic party revealed to receive the most contributions, the following visualizations display the distribution of contributions from every state to each party.The contributions highlighted in this visualzation are only contributions from organizations. In the data visualzation of the republican party, Maryland clearly recived the most contributions. 
->>>>>>> b6d1027357cdbe013692bac01260cbfff92b6381
 
 Link to GitHub repository: https://github.com/mrosenstein/sds192-mp2.git
