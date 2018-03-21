@@ -46,17 +46,8 @@ contri_candi <- contributions %>%
          cand_party_affiliation = ifelse(cand_party_affiliation == 'DEM', 'D', cand_party_affiliation)) %>%
   group_by(cand_name,cand_party_affiliation,date,year,entity_type) %>%
   summarize(total_amt = sum(transaction_amt))
-           
-contri_candi <- contri_candi %>%
-  mutate(cand_party_affiliation = case_when(
-  cand_party_affiliation == "REP" ~ "Republican",
-  cand_party_affiliation == "DEM" ~ "Democratic")
-  
- )
 
-=======
 glimpse(contri_candi)
->>>>>>> c44b7b9452a22decb3999a02a0d053350f1d7fa5
 ```
 
 ```{r}
@@ -84,7 +75,7 @@ my_plot2
 ### Contributions made by different entities
 ```{r}
 my_plot3 <- contri_candi %>% 
-  filter(cand_party_affiliation == "REP") %>%
+  filter(cand_party_affiliation == "R") %>%
   ggplot(aes(x=date, y= total_amt)) +
   geom_line()+
   theme_bw() +
@@ -101,15 +92,13 @@ my_plot3
 ```
 
 ```{r}
-summary <- contri_candi %>% 
-  group_by(cand_name, cand_party_affiliation, entity_type, year) %>% 
-  summarise(total = sum(total_amt))
-summary
 
-my_plot4 <- summary %>% 
-  filter(cand_party_affiliation == "REP") %>%
-  ggplot(aes(x=year, y= total)) +
-  geom_bar()+
+my_plot4 <-  contri_candi %>% 
+  filter(cand_party_affiliation == "R",
+         year == 2012) %>%
+  ggplot(aes(x=date, y= total_amt)) +
+  geom_line()+
+  #geom_bar(stat = "identity")+
   theme_bw() +
   labs(x = NULL,
        y = "Total Expenditures to Candidates") +
