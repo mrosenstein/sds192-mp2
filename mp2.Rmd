@@ -34,7 +34,8 @@ glimpse(contributions)
 ```{r}
 contri_candi <- contributions %>% 
   filter(transaction_type == "24E",
-         transaction_amt >= 0) %>%
+         transaction_amt >= 0,
+         entity_type != "") %>%
   left_join(candidates, by = "cand_id") %>%
   filter(cand_party_affiliation %in% c('REP','DEM','IND','LIB')) %>%
   select(cand_party_affiliation, transaction_amt, transaction_dt, cand_name, entity_type) %>%
@@ -47,7 +48,6 @@ contri_candi <- contributions %>%
   summarize(total_amt = sum(transaction_amt))
            
 glimpse(contri_candi)
-
 ```
 
 ```{r}
