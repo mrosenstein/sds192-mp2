@@ -7,7 +7,8 @@ output:
     code_folding: show
 ---
 
-The data represented in these visualizations originate from the Federal Election Commission. The data is focused around the Jan 1, 2011 - Dec 31, 2012 election cycle. The candidates are those who have registered with the Federal Election Commission or are present on an official ballot list from a given state's elections office. The contributions to candidates are ones that have been received from itemized committees, PAC contributions to a party committee, party transfers between state committees, and party transfers from a national committee to a state committee. The contributions highlighted in these visualizations are only independent expenditures advocating for election of the specified candidate.
+The data represented in these visualizations originate from the Federal Election Commission. The data is focused around the January 1, 2011 - December 31, 2012 election cycle. The candidates are those who have registered with the Federal Election Commission or are present on an official ballot list from a given state’s elections office. The contributions to candidates are ones that have been received from itemized committees, PAC contributions to a party committee, party transfers between state committees, and party transfers from a national committee to a state committee. The contributions highlighted in these visualizations are only independent expenditures advocating for election of the specified candidate.
+
 ```{r, include=FALSE, message = FALSE, warning = FALSE}
 load("house_elections.rda")
 load("candidates.rda")
@@ -21,10 +22,9 @@ library(fiftystater)
 library(mapproj)
 library(RColorBrewer)
 ```
-## Data Wrangling 
-#####We first filtered the data to only include "24E" which are only independent expenditures advocating for the election of a candidate. We then filtered only looked at positive transaction amount, therefore eliminating out any donations that were returned. We joined the candidates dataset with contributions dataset by candidate's id number which was a variable present in both datasets. We selected variables that we were particularly interested in looking at: candidate's party affiliation, transaction amount, transaction date, candidate name, and the source of the contributions (entity type) which we filtered to be just organizations.We then mutated the transaction date from numeric numbers to strings, and renamed the candidate party affiliation names to display the full names rather than the abbreviation. 
-
-```{r}
+##Data Wrangling 
+First, we filtered the data to only include “24E” contributors which are expenditures advocating for the election of a candidate. We then filtered to only look at positive transaction amounts, therefore eliminating any donations that had been retracted. We joined the candidates dataset with contributions dataset by candidate’s id number which was a variable present in both datasets. We filtered the candidate party affiliations to only include republican, democrat, independent, and libertarian parties. We selected variables that we found particularly interesting: candidate’s party affiliation, transaction amount, transaction date, candidate name, and the source of the contributions (entity type). Then, we mutated the transaction date from numeric numbers to strings, and renamed the candidate party affiliation names to display the full names rather than the abbreviation. We grouped by cand_name, cand_party_affiliation, date, year, entity_type, and state so that we could sum the transaction amount and obtain a total transaction amount.
+```{r, message = FALSE, warning = FALSE}
 contri_candi <- contributions %>% 
   filter(transaction_type == "24E",
          transaction_amt >= 0,
@@ -44,11 +44,9 @@ contri_candi <- contributions %>%
   group_by(cand_name,cand_party_affiliation,date,year,entity_type,state) %>%
   summarize(total_amt = sum(transaction_amt))
 ```
-
-## Data Visualizations
-#### Figure 1: The contribution amount given to the republican party, democratic party, independent party, and libertarian party from January 1, 2011 to December 31, 2012.
-```{r}
-# Write a function to plot the graph given a specific source of contribution and a color
+##Data Visualizations
+```{r, message = FALSE, warning = FALSE}
+#A function to plot the amount of contributions given to each candidate party by both individuals and organizations
 graph_fun <- function(entity, colour){
   contri_candi %>% 
   filter(entity_type == entity) %>% 
@@ -66,27 +64,29 @@ graph_fun <- function(entity, colour){
 }
 
 my_plot1 <- graph_fun("ORG","hotpink4")
-my_plot1
+```
 
-# Call the graphing function for contributions made by orgnizations
+#####Figure 1: The contributions given to the republican party, democratic party, independent party, and libertarian party from organizations 
+```{r, message = FALSE, warning = FALSE}
+#Calling the graphing function for contributions made by organizations
 my_plot1 <- graph_fun("ORG","hotpink4")
 my_plot1
-<<<<<<< HEAD
-# # Call the graphing function for contributions made by individuals
+```
 
-=======
-# Call the graphing function for contributions made by individuals
->>>>>>> 4e296a7dc37c4c2704a0f6af492e0fdf8ec1cea5
+This visualization displays the total amount of contributions to the different party affiliations from organizations. The data was filtered to span from January 1, 2011 to December 31, 2012.The parties highlighted in the visualization are the democratic party, republican party, libertarian party, and independent. The republican and democratic parties received the most contributions, however the republican party received the most contributions from organizations as seen in the visualization. These results are not surprising due to the fact the the democratic party and republican party are the primary political parties. The choice of a line graph was to display an immediate trend in the data. We faceted the data to clearly distinguish the different party affiliations.
+
+#####Figure 2: The contributions given to the republican party, democratic party, independent party, and libertarian party from individuals 
+```{r, message = FALSE, warning = FALSE}
+#Calling the graphing function for contributions made by individuals
 my_plot2 <- graph_fun("IND","navyblue")
 my_plot2
 ```
 
-This visualization displays the total amount of contributions by party affiliation. The data was filtered to span from January 1, 2011 to December 31, 2012. The contributions included in the visualization are from various types of contributors ranging from large organizations to individuals. The parties highlighted in the visualization are democratic party, republican party, libertarian party, and independent. The republican and democratic parties received the most contributions, however the republican party received the most contributions as seen in the visualization. These results are not surprising due to the fact the the democratic party and republican party are the primary political parties. 
+This visualization obtains the same perimeters as figure 1 except it displays the contributions given to candidates by individuals rather than organizations. In contrast to figure 1, more individuals contributed to democrats than republicans. However, the democratic and republican parties still both received more contributions than the independent party and the libertarian party.
 
-
-### Figure 2: Contributions made by different states
-```{r, warning = FALSE}
-# Read 52 state codes into a local dataframe 
+#####Figure 3: Contributions made to the republican party by organizations from different states in 2012
+```{r, message = FALSE, warning = FALSE}
+#Reading 52 state codes into a local dataframe 
 st.codes<-data.frame(abb=as.factor(c("AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
                                          "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME",
                                          "MI", "MN", "MO", "MS",  "MT", "NC", "ND", "NE", "NH", "NJ", "NM",
@@ -104,19 +104,19 @@ st.codes<-data.frame(abb=as.factor(c("AK", "AL", "AR", "AZ", "CA", "CO", "CT", "
                                        "west virginia","wyoming"))
                      )
 
-# Replace abbreviated state names in our dataframe to full state names
+#Replacing the abbreviated state names in the dataframe to complete state names
 contri_candi$state <-plyr::mapvalues(contri_candi$state, from = as.character(st.codes$abb), to = as.character(st.codes$state))
 
-# Create a summary dataframe calculating total contributions for a given party affiliation,year,source,and state
+#Creating a dataframe calculating the total contributions for a given party affiliation, year, source, and state
 state.summary <- contri_candi %>%
   group_by(cand_party_affiliation, year, entity_type, state) %>%
   summarize(total = sum(total_amt)) %>%
   filter(!is.na(total))
 
-# Create a custom color palette (diverging colors)
+#Creating a custom color palette for the visualzation 
 myPalette <- colorRampPalette(rev(brewer.pal(9, "RdGy")))
 
-# Create a map showing contributions to Republican candidates made by orgnizations in 2012 by different states
+#Creating a map displaying the distribution of contributions to the republican candidates made by orgnizations in 2012 
 my_plot3 <- state.summary %>% 
   filter(entity_type == "ORG",
          cand_party_affiliation == "Republican",
@@ -132,7 +132,7 @@ my_plot3 <- state.summary %>%
                        breaks=c(1000,50000000),
                        labels=c("1K","50M"),
                        limits=c(1000,50000000),
-                       guide = guide_colorbar(title = "Amount of Contributions")) +
+                       guide = guide_colorbar(title = "Contribution Values")) +
   labs(x = "", y = "") +
   labs(title = "Contributions to Republican Candidates Made by Orgnizations in 2012") +
   theme(panel.background = element_blank(),
@@ -141,11 +141,6 @@ my_plot3 <- state.summary %>%
 my_plot3
 ```
 
-<<<<<<< HEAD
-
-Because the republican party and democratic party revealed to receive the most contributions, the following visualizations display the distribution of contributions from every state to each party.The contributions highlighted in this visualzation are only contributions from organizations. In the data visualzation of the republican party, Maryland clearly recived the most contributions. 
-=======
-Because the republican party revealed to receive the most contributions, the following visualization displays the distribution of contributions from every state to republican party.The contributions highlighted in this visualzation are only contributions from organizations. In the data visualzation of the republican party, Maryland clearly received the most contributions in 2012. 
->>>>>>> 4e296a7dc37c4c2704a0f6af492e0fdf8ec1cea5
+Due to the fact that the republican party revealed to receive the most contributions from organizations, the following visualization displays the distribution of contributions from every state to republican party. The contribution data is selected from 2012. According to the visualization, Maryland clearly received the most contributions in 2012.
 
 Link to GitHub repository: https://github.com/mrosenstein/sds192-mp2.git
